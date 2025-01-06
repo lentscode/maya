@@ -34,9 +34,12 @@ jobs:
         with:
           command: build
           args: --release
+      - name: Rename artifact
+        run: |
+          mv target/release/${{ matrix.artifact_name }} target/release/${{ matrix.asset_name }}
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: target/release/${{ matrix.artifact_name }}
+          files: target/release/${{ matrix.asset_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
