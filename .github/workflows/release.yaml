@@ -21,22 +21,30 @@ jobs:
           - os: macos-latest
             artifact_name: maya
             asset_name: maya-macos-amd64
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            artifact_name: maya
+            asset_name: maya-macos-arm64
+            target: aarch64-apple-darwin
           - os: windows-latest
             artifact_name: maya.exe
             asset_name: maya-windows-amd64.exe
-    
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - name: Install target (if required)
+        if: ${{ matrix.target != '' }}
+        run: rustup target add ${{ matrix.target }}
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release
+          args: ${{ matrix.target && format('--release --target {}', matrix.target) || '--release' }}
       - name: Rename artifact
         run: |
-          mv target/release/${{ matrix.artifact_name }} target/release/${{ matrix.asset_name }}
+          mv target/${{ matrix.target || 'release' }}/${{ matrix.artifact_name }} target/release/${{ matrix.asset_name }}
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
