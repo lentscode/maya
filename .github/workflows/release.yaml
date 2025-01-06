@@ -1,0 +1,40 @@
+name: Release `maya`
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    name: Build release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: maya
+            asset_name: maya-linux-amd64
+          - os: macos-latest
+            artifact_name: maya
+            asset_name: maya-macos-amd64
+          - os: windows-latest
+            artifact_name: maya.exe
+            asset_name: maya-windows-amd64.exe
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
