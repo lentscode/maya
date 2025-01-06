@@ -41,11 +41,13 @@ impl Sh {
             }
         }
 
+        files.sort_unstable();
+
         Ok(files)
     }
 
     fn run_script_file(&self, file: &str) -> Result<()> {
-        Command::new("sh").arg(self.dir.join(file)).spawn().unwrap();
+        Command::new("sh").arg(self.dir.join(file)).status().unwrap();
         Ok(())
     }
 
