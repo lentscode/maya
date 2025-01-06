@@ -20,7 +20,7 @@ jobs:
             asset_name: maya-linux-amd64
           - os: macos-latest
             artifact_name: maya
-            asset_name: maya-macos-amd64
+            asset_name: maya-macos-x86_64
             target: x86_64-apple-darwin
           - os: macos-latest
             artifact_name: maya
@@ -41,10 +41,10 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: ${{ matrix.target && format('--release --target {}', matrix.target) || '--release' }}
+          args: ${{ matrix.target && format('--release --target {0}', matrix.target) || '--release' }}
       - name: Rename artifact
         run: |
-          mv target/${{ matrix.target || 'release' }}/${{ matrix.artifact_name }} target/release/${{ matrix.asset_name }}
+          mv target/${{ matrix.target && format('{0}/release', matrix.target) || 'release' }}/${{ matrix.artifact_name }} target/release/${{ matrix.asset_name }}
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
