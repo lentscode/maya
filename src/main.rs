@@ -21,6 +21,8 @@ fn main() {
     }
     MayaSubcommand::Create => {
       create::Create::run().unwrap();
+      println!("{}", ansi_term::Color::Green.paint("File created successfully"));
     }
   }
 }
+

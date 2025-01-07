@@ -35,11 +35,15 @@ impl Create {
 
   fn get_template() -> Template {
     let template_chosen = Select::new(
-      "Select a template",
-      templates::TEMPLATES
-        .iter()
-        .map(|t| format!("{} - {}", t.name, t.description))
-        .collect(),
+      "Select a template:",
+      {
+        let mut templates: Vec<_> = templates::TEMPLATES.iter().collect();
+        templates.sort_unstable_by(|a, b| a.name.cmp(&b.name));
+        templates
+          .into_iter()
+          .map(|t| format!("{} - {}", t.name, t.description))
+          .collect()
+      }
     )
     .prompt()
     .expect("Failed to select template");
