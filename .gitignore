@@ -2,3 +2,4 @@
 
 .maya.json
 .scripts/
+.rustfmt.toml
